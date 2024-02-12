@@ -183,6 +183,11 @@ class MultiLevelMrp(models.TransientModel):
             boms = product_mrp_area_id.product_id.bom_ids.filtered(
                 lambda x: x.type in ["normal", "phantom"] and (
                     x.product_id is None or x.product_id.id == product_mrp_area_id.product_id.id))
+            if not boms:
+                boms = product_mrp_area_id.product_id.bom_ids.filtered(
+                    lambda x: x.type in ["normal", "phantom"]
+            )
+
         if not boms:
             return False
         return boms[0]
