@@ -181,12 +181,9 @@ class MultiLevelMrp(models.TransientModel):
         boms = self.env["mrp.bom"]
         if product_mrp_area_id.supply_method in ["manufacture", "phantom"]:
             boms = product_mrp_area_id.product_id.bom_ids.filtered(
-                lambda x: x.type in ["normal", "phantom"] and (
-                    x.product_id is None or x.product_id.id == product_mrp_area_id.product_id.id))
-            if not boms:
-                boms = product_mrp_area_id.product_id.bom_ids.filtered(
-                    lambda x: x.type in ["normal", "phantom"]
-            )
+                lambda x: (x.type in ["normal", "phantom"] and x.product_id == self.product_id) or 
+                (x.product_tmpl_id == self.record_tmpl_id and x.product_id == False))
+            
 
         if not boms:
             return False
